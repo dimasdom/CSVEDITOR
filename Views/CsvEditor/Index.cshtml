@@ -1,0 +1,226 @@
+﻿@model CSVEDITOR.Models.ViewModels.CsvEditIndexViewModel
+@using CSVEDITOR.Models.File
+
+<div class="container">
+    <h1 class="display-4">.csv editor</h1>
+    <form asp-action="Export" asp-controller="CsvEditor" method="post">
+        <div class="container m-4 border rounded p-2">
+            <p>Export properties</p>
+            <div class="row">
+                <div class="col">
+                    <p>id</p>
+                    <input name="IdBool" type="checkbox" />
+                </div>
+                <div class="col">
+                    <select name="Status">
+                        <option value="Pending">Pending</option>
+                        <option value="Completed">Completed</option>
+                        <option value="Cancelled">Cancelled</option>
+                        <option selected value="All">All</option>
+                    </select>
+                    <input name="StatusBool" type="checkbox" />
+                </div>
+                <div class="col">
+                    <select name="Type">
+                        <option value="Withdrawal">Withdrawal</option>
+                        <option value="Refill">Refill</option>
+                        <option selected value="All">All</option>
+                    </select>
+                    <input name="TypeBool" type="checkbox" />
+                </div>
+                <div class="col">
+                    <p>Client</p>
+                    <input name="ClientBool" type="checkbox" />
+                </div>
+                <div class="col">
+                    <p>Amount</p>
+                    <input name="AmountBool" type="checkbox" />
+                </div>
+            </div>
+        </div>
+        <button type="submit" >Export</button>
+    </form>
+    <form asp-action="Import" asp-controller="CsvEditor" method="post" enctype="multipart/form-data">
+        <input name="File" type="file" />
+        <input class="btn btn-primary" type="submit" value="Load" />
+    </form>
+    <form asp-action="Search" asp-controller="CsvEditor" method="post">
+        <div class="container m-4 border rounded p-2">
+            <div class="row">
+                <div>
+                    <input name="ClientName" placeholder="Client Name" />
+                </div>
+
+                <div class="col">
+                    <button type="submit" class="btn-light">Search</button>
+                </div>
+            </div>
+        </div>
+        
+    </form>
+    <form asp-action="Filter" asp-controller="CsvEditor" method="post">
+        <div class="container m-4 border rounded p-2">
+            <div class="row">
+
+                <div class="col">
+                    <select name="Status">
+                        <option value="Pending">Pending</option>
+                        <option value="Completed">Completed</option>
+                        <option value="Cancelled">Cancelled</option>
+                        <option selected value="All">All</option>
+                    </select>
+                </div>
+                <div class="col">
+                    <select name="Type">
+                        <option value="Withdrawal">Withdrawal</option>
+                        <option value="Refill">Refill</option>
+                        <option selected value="All">All</option>
+                    </select>
+                </div>
+                <button type="submit">Filter</button>
+            </div>
+        </div>
+        
+    </form>
+    @if (Model.CreatingStatus)
+    {
+
+        <form asp-action="Create" asp-controller="CsvEditor" method="post">
+            <div class="container m-4 border rounded p-2">
+                <div class="row">
+                    <div class="col">
+                        <input disabled name="TransactionId" placeholder="Id" value="@(Model.Transactions.Count+1)" />
+                    </div>
+                    <div class="col">
+                        <select name="Status">
+                            <option selected value="Pending">Pending</option>
+                            <option value="Completed">Completed</option>
+                            <option value="Cancelled">Cancelled</option>
+                        </select>
+                    </div>
+                    <div class="col">
+                        <select name="Type">
+                            <option selected value="Withdrawal">Withdrawal</option>
+                            <option value="Refill">Refill</option>
+                        </select>
+                    </div>
+                    <div class="col">
+                        <input name="ClientName" placeholder="Client Name" />
+                    </div>
+                    <div class="col">
+                        <input name="Amount" placeholder="Amount" />
+                    </div>
+                    <div class="col">
+                        <button type="submit" class="btn-light">Create</button>
+                    </div>
+                </div>
+            </div>
+            
+        </form>
+    }
+
+    <h1 class="display-4">
+        Transactions
+    </h1>
+    <a asp-action="Create" asp-controller="CsvEditor">
+        Create new Transaction
+    </a>
+    @if (Model.EditingStatus)
+    {
+        <h1>Edit Your Transaction</h1>
+        <form asp-action="Edit" method="post">
+            <div class="row">
+                <div class="col">
+                    <input disabled name="TransactionId" value="@Model.TransactionForEdit.TransactionId " />
+                </div>
+
+                <div class="col">
+                    <select name="Status">
+                        @switch (Model.TransactionForEdit.Status)
+                        {
+                            case "Pendidng":
+                                <option selected value="Pending">Pending</option>
+                                <option value="Completed">Completed</option>
+                                <option value="Cancelled">Cancelled</option>
+                                break;
+                            case "Completed":
+                                <option value="Pending">Pending</option>
+                                <option selected value="Completed">Completed</option>
+                                <option value="Cancelled">Cancelled</option>
+                                break;
+                            case "Cancelled":
+                                <option value="Pending">Pending</option>
+                                <option value="Completed">Completed</option>
+                                <option selected value="Cancelled">Cancelled</option>
+                                break;
+                            default:
+                                <option value="Pending">Pending</option>
+                                <option value="Completed">Completed</option>
+                                <option value="Cancelled">Cancelled</option>
+                                break;
+                        }
+
+                    </select>
+                </div>
+                <div class="col">
+                    <select name="Type">
+                        @switch (Model.TransactionForEdit.Type)
+                        {
+                            case "Withdrawal":
+                                <option selected value="Withdrawal">Withdrawal</option>
+                                <option value="Refill">Refill</option>
+                                break;
+                            case "Refil":
+                                <option value="Withdrawal">Withdrawal</option>
+                                <option selected value="Refill">Refill</option>
+                                break;
+                            default:
+                                <option value="Withdrawal">Withdrawal</option>
+                                <option value="Refill">Refill</option>
+                                break;
+                        }
+                        
+                    </select>
+                </div>
+                <div class="col">
+                    <input name="ClientName" value="@Model.TransactionForEdit.ClientName " />
+                </div>
+                <div class="col">
+                    <input name="Amount" value="@Model.TransactionForEdit.Amount " />
+                </div>
+                <div class="col">
+                    <input type="submit" class="btn-light" value="Update" />
+                </div>
+            </div>
+        </form>
+
+    }
+
+    @foreach (TransactionModel transaction in Model.Transactions)
+    {
+        <div class="row">
+            <div class="col">
+                <p>@transaction.TransactionId</p>
+            </div>
+            <div class="col">
+                <p>@transaction.Status</p>
+            </div>
+            <div class="col">
+                <p>@transaction.Type</p>
+            </div>
+            <div class="col">
+                <p>@transaction.ClientName</p>
+            </div>
+            <div class="col">
+                <p>@transaction.Amount</p>
+            </div>
+            <div class="col">
+                <a asp-action="Edit" asp-controller="CsvEditor" asp-route-id="@transaction.TransactionId" class="btn-light">Edit</a>
+            </div>
+            <div class="col">
+                <a asp-action="Delete" asp-controller="CsvEditor" asp-route-id="@transaction.TransactionId" class="btn-light">Delete</a>
+            </div>
+        </div>
+    }
+
+</div>

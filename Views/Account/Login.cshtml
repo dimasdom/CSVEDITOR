@@ -1,0 +1,28 @@
+﻿@model CSVEDITOR.Models.User.LoginDTOs
+<div class="container m-auto w-50">
+    <p class="display-4 text-center">Login</p>
+    <form asp-action="Login" asp-controller="Account" method="post">
+
+        <div class="input-group mb-3">
+
+            <input asp-for="Email" class="form-control" placeholder="Email" />
+            <span asp-validation-for="Email">
+
+            </span>
+        </div>
+        <div class="input-group mb-3 ">
+
+            <input asp-for="Password" class="form-control" placeholder="Password" />
+            <span asp-validation-for="Password">
+
+            </span>
+        </div>
+        <input type="submit" value="Login" class="btn btn-primary m-auto" />
+    </form>
+    <div class="input-group mt-4 ">
+
+        <a asp-action="Register" asp-controller="Account" >If You Don't Have An Account</a>
+    </div>
+
+
+</div>

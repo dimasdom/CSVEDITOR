@@ -1,0 +1,22 @@
+﻿@model CSVEDITOR.Models.User.RegisterDTOs
+<p class="display-4 text-center mb-4">Register</p>
+<div class="container m-auto w-50 mt-4">
+
+    <form asp-controller="Account" asp-action="Register" method="post">
+        <div class="input-group mb-3">
+            <input asp-for="Email" class="form-control" placeholder="Email" />
+        </div>
+       
+        <div class="input-group mb-3">
+            <input asp-for="Password" class="form-control" placeholder="Password" />
+        </div>
+        
+        <div class="input-group mb-3">
+            <input asp-for="UserName" class="form-control" placeholder="Nickname" />
+        </div>
+        <div class="input-group mb-3">
+            <input class="btn btn-primary" type="submit" value="Register" />
+        </div>
+
+    </form>
+</div>

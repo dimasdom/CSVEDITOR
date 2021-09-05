@@ -3,15 +3,13 @@ using CSVEDITOR.Models.User;
 using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.OpenApi.Models;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace CSVEDITOR
 {
@@ -27,15 +25,36 @@ namespace CSVEDITOR
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddDbContext<CsvEditorContext>(options =>
+            {
+                options.UseSqlServer(Configuration.GetConnectionString("SQLServer"));
+            });
             services.AddMvc();
             services.AddControllersWithViews();
-            services.AddRazorPages();
-            services.AddDbContext<MainContext>();
+            
+
+
             services.AddIdentity<UserModel, IdentityRole>()
-                .AddEntityFrameworkStores<MainContext>()
-                .AddSignInManager<SignInManager<UserModel>>();
+                .AddEntityFrameworkStores<CsvEditorContext>()
+                .AddSignInManager<SignInManager<UserModel>>()
+                .AddRoles<IdentityRole>();
             services.AddAuthentication();
             services.AddMediatR(typeof(Startup));
+            services.AddSwaggerGen(c =>
+            {
+                c.SwaggerDoc("v1", new OpenApiInfo
+                {
+                    Title = "CSVEDITOR API",
+                    Version = "v1",
+                    Description = "App for edit .csv files and export into excel",
+                    Contact = new OpenApiContact
+                    {
+                        Name = "Dmitry Bartash",
+                        Email = "dimasdom@ukr.net",
+                        Url = new Uri(""),
+                    },
+                });
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -43,7 +62,19 @@ namespace CSVEDITOR
         {
             if (env.IsDevelopment())
             {
+
                 app.UseDeveloperExceptionPage();
+                app.UseSwagger();
+
+                // Enable middleware to serve swagger-ui (HTML, JS, CSS, etc.),
+                // specifying the Swagger JSON endpoint.
+                app.UseSwaggerUI(c =>
+                {
+                    c.SwaggerEndpoint("/swagger/v1/swagger.json", "CSVEDITOR API V1");
+
+                    // To serve SwaggerUI at application's root page, set the RoutePrefix property to an empty string.
+                    c.RoutePrefix = string.Empty;
+                });
             }
             else
             {
@@ -56,14 +87,14 @@ namespace CSVEDITOR
 
             app.UseRouting();
 
-            app.UseAuthentication();  
-            app.UseAuthorization();
+            app.UseAuthentication();    
+            app.UseAuthorization();     
 
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllerRoute(
                     name: "default",
-                    pattern: "{controller=Home}/{action=Index}/{id?}");
+                    pattern: "{controller=CsvEditor}/{action=Index}/{id?}");
             });
         }
     }

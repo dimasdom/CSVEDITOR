@@ -1,5 +1,3 @@
-using System;
-
 namespace CSVEDITOR.Models
 {
     public class ErrorViewModel
